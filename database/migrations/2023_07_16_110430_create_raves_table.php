@@ -19,7 +19,7 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
-            $table->string('body');
+            $table->string('body', 1024);
 
             $table->foreignId('parent_rave_id')
                 ->nullable()
