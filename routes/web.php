@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\RaveController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,10 +14,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Route::middleware('guest')->group(function () {
 Route::get('/', function () {
-    return inertia('Index', [
-        'isLoggedIn' => auth()->check(),
-    ]);
+    if (auth()->check()) {
+        return redirect()->route('raves.index');
+    }
+
+    return inertia('Index');
 })->name('home');
+// });
+
+Route::middleware('auth')->group(function () {
+    // Route::get('/', function () {
+    //     return redirect()->route('raves.index');
+    // });
+
+    Route::resource('raves', RaveController::class)->except([
+        'create',
+        'edit',
+    ]);
+});
 
 require __DIR__.'/auth.php';
