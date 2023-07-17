@@ -5,14 +5,14 @@ This is a complete rewrite of my [very small Twitter clone](https://github.com/t
 ## Tasks
 
 -   [x] Authentication
--   [ ] Tweets
+-   [ ] Raves
 -   [ ] Comments
--   [ ] Likes
--   [ ] Retweets
+-   [x] Likes
+-   [ ] Reraves
 -   [ ] show ... count
-    -   [ ] retweet
-    -   [ ] comment
-    -   [ ] like
+    -   [x] rerave
+    -   [x] comment
+    -   [x] like
     -   [ ] view
 
 ## License

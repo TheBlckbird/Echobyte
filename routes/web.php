@@ -33,6 +33,8 @@ Route::middleware('auth')->group(function () {
         'create',
         'edit',
     ]);
+
+    Route::post('/raves/{rave}/toggle-like', [RaveController::class, 'toggleLike'])->name('raves.toggle-like');
 });
 
 require __DIR__.'/auth.php';

@@ -12,5 +12,7 @@ export interface Rave {
     created_at: string
     comments_count: number
     reraves_count: number
+    is_liked: boolean
+    is_owner: boolean
     user: User
 }

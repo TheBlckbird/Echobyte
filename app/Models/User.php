@@ -5,6 +5,7 @@ namespace App\Models;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -49,5 +50,23 @@ class User extends Authenticatable
     public function raves(): HasMany
     {
         return $this->hasMany(Rave::class);
+    }
+
+    /**
+     * Get the Raves liked by the user.
+     */
+    public function likedRaves(): BelongsToMany
+    {
+        return $this->belongsToMany(Rave::class, 'rave_like', 'user_id', 'rave_id');
+    }
+
+    public function toggleLike(Rave $rave)
+    {
+        $this->likedRaves()->toggle($rave);
+    }
+
+    public function hasLiked(Rave $rave): bool
+    {
+        return $this->likedRaves()->where('rave_id', $rave->id)->exists();
     }
 }

@@ -12,7 +12,7 @@ class RaveController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $raves = Rave::with('user:id,name')
             ->where('parent_rave_id', null)
@@ -21,9 +21,12 @@ class RaveController extends Controller
             ->latest()
             ->simplePaginate(12);
 
-        $raves->transform(function ($rave) {
+        $raves->transform(function ($rave) use ($request) {
             $rave['comments_count'] = $rave->comments()->count();
             $rave['reraves_count'] = $rave->reraves()->count();
+            $rave['is_owner'] = $rave->user_id === auth()->id();
+            $rave['likes_count'] = $rave->usersLiked()->count();
+            $rave['is_liked'] = $request->user()->hasLiked($rave);
 
             return $rave;
         });
@@ -46,7 +49,7 @@ class RaveController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Rave $rave)
+    public function show(Request $request, Rave $rave)
     {
         $rave->load([
             'user:id,name',
@@ -55,6 +58,9 @@ class RaveController extends Controller
         ]);
 
         $rave['reraves_count'] = $rave->reraves()->count();
+        $rave['is_owner'] = $rave->user_id === auth()->id();
+        $rave['likes_count'] = $rave->usersLiked()->count();
+        $rave['is_liked'] = $request->user()->hasLiked($rave);
 
         return inertia('Raves/Show', [
             'rave' => $rave,
@@ -82,15 +88,14 @@ class RaveController extends Controller
     }
 
     /**
-     * Like the specified resource.
+     * Toggle the like status of the Rave for the user
      */
-    public function like(Request $request)
+    public function toggleLike(Request $request, Rave $rave)
     {
-        $request->user()->like($request->likeable());
-    }
+        $request->user()->likedRaves()->toggle($rave);
 
-    public function unlike(Request $request)
-    {
-        $request->user()->unlike($request->likeable());
+        // return json_encode([
+        //     'likes_count' => $rave->likes_count,
+        // ]);
     }
 }
