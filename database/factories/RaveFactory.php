@@ -18,9 +18,8 @@ class RaveFactory extends Factory
     {
         return [
             'user_id' => 7,
-            'body' => $this->faker->sentence,
+            'body' => $this->faker->realText(1024),
             'likes_count' => $this->faker->numberBetween(0, 100),
-
         ];
     }
 }

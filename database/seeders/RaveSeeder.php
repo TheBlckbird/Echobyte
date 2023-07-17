@@ -13,7 +13,7 @@ class RaveSeeder extends Seeder
     public function run(): void
     {
         Rave::factory()
-            ->count(100)
+            ->count(500)
             ->create();
     }
 }
