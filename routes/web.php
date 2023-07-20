@@ -29,10 +29,13 @@ Route::middleware('auth')->group(function () {
     //     return redirect()->route('raves.index');
     // });
 
-    Route::resource('raves', RaveController::class)->except([
-        'create',
-        'edit',
-    ]);
+    Route::resource('raves', RaveController::class)
+        ->except([
+            'create',
+            'edit',
+        ])
+        ->parameter('raves', 'rave');
+    Route::post('/raves/{rave}/comments', [RaveController::class, 'storeComment'])->name('raves.comments');
 
     Route::post('/raves/{rave}/toggle-like', [RaveController::class, 'toggleLike'])->name('raves.toggle-like');
 });

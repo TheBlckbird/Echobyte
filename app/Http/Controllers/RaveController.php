@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreRaveRequest;
 use App\Http\Requests\UpdateRaveRequest;
 use App\Models\Rave;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class RaveController extends Controller
@@ -22,13 +23,7 @@ class RaveController extends Controller
             ->simplePaginate(12);
 
         $raves->transform(function ($rave) use ($request) {
-            $rave['comments_count'] = $rave->comments()->count();
-            $rave['reraves_count'] = $rave->reraves()->count();
-            $rave['is_owner'] = $rave->user_id === auth()->id();
-            $rave['likes_count'] = $rave->usersLiked()->count();
-            $rave['is_liked'] = $request->user()->hasLiked($rave);
-
-            return $rave;
+            return $this->getAdditionalRaveProperties($request->user(), $rave, true);
         });
 
         return inertia('Raves/Index', [
@@ -41,7 +36,7 @@ class RaveController extends Controller
      */
     public function store(StoreRaveRequest $request)
     {
-        $rave = $request->user()->raves()->create($request->validated());
+        $request->user()->raves()->create($request->validated());
 
         return redirect()->route('raves.index');
     }
@@ -57,14 +52,29 @@ class RaveController extends Controller
             'comments.user:id,name',
         ]);
 
-        $rave['reraves_count'] = $rave->reraves()->count();
-        $rave['is_owner'] = $rave->user_id === auth()->id();
-        $rave['likes_count'] = $rave->usersLiked()->count();
-        $rave['is_liked'] = $request->user()->hasLiked($rave);
+        $rave = $this->getAdditionalRaveProperties($request->user(), $rave);
+
+        $rave->comments->transform(function ($comment) use ($request) {
+            return $this->getAdditionalRaveProperties($request->user(), $comment, true);
+        });
 
         return inertia('Raves/Show', [
             'rave' => $rave,
         ]);
+    }
+
+    public function getAdditionalRaveProperties(User $user, Rave $rave, bool $withComments = false): Rave
+    {
+        $rave['reraves_count'] = $rave->reraves()->count();
+        $rave['is_owner'] = $rave->user_id === auth()->id();
+        $rave['likes_count'] = $rave->usersLiked()->count();
+        $rave['is_liked'] = $user->hasLiked($rave);
+
+        if ($withComments) {
+            $rave['comments_count'] = $rave->comments()->count();
+        }
+
+        return $rave;
     }
 
     /**
@@ -97,5 +107,14 @@ class RaveController extends Controller
         // return json_encode([
         //     'likes_count' => $rave->likes_count,
         // ]);
+    }
+
+    public function storeComment(StoreRaveRequest $request, Rave $rave)
+    {
+        $comment = new Rave($request->validated());
+        $comment->user()->associate($request->user());
+        $rave->comments()->save($comment);
+
+        return back()->withMessage('Comment posted.');
     }
 }

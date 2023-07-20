@@ -1,12 +1,17 @@
 <script lang="ts">
     import { useForm } from '@inertiajs/svelte'
 
+    export let comment = false
+    export let raveId = -1
+
     let newRaveForm = useForm({
         body: ''
     })
 
     function submitNewRaveForm() {
-        $newRaveForm.post('/raves', {
+        let uri = comment ? `/raves/${raveId}/comments` : '/raves'
+
+        $newRaveForm.post(uri, {
             preserveScroll: true,
             onSuccess: () => $newRaveForm.reset('body')
         })
