@@ -18,10 +18,10 @@ class RaveController extends Controller
      */
     public function index(Request $request): InertiaResponse|InertiaResponseFactory
     {
-        $raves = Rave::select('id', 'user_id', 'body', 'created_at')
+        $raves = Rave::select('id', 'user_id', 'body', 'created_at', 'original_rave_id')
             ->withCount($this->getCountsToLoad())
             ->where('parent_rave_id', null)
-            ->whereNot('original_rave_id', null)
+            // ->whereNot('original_rave_id', null)
             ->with([
                 'user:id,name',
                 'originalRave:id,user_id,body',
@@ -29,8 +29,6 @@ class RaveController extends Controller
             ])
             ->latest()
             ->simplePaginate(12);
-
-        dump($raves);
 
         $raves->transform(function (Rave $rave) {
             return $this->loadAdditionalRaveProperties($rave);
