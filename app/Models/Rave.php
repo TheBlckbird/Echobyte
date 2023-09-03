@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
+/** @psalm-suppress PropertyNotSetInConstructor */
 class Rave extends Model
 {
     use HasFactory;
@@ -39,7 +40,6 @@ class Rave extends Model
     public function originalRave(): BelongsTo
     {
         return $this->belongsTo(Rave::class, 'original_rave_id');
-        echo 'hiA';
     }
 
     /**

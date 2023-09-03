@@ -5,14 +5,18 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreRaveRequest;
 use App\Http\Requests\UpdateRaveRequest;
 use App\Models\Rave;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Inertia\Response as InertiaResponse;
+use Inertia\ResponseFactory as InertiaResponseFactory;
 
 class RaveController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): InertiaResponse|InertiaResponseFactory
     {
         $raves = Rave::select('id', 'user_id', 'body', 'created_at')
             ->withCount($this->getCountsToLoad())
@@ -28,7 +32,7 @@ class RaveController extends Controller
 
         dump($raves);
 
-        $raves->transform(function ($rave) {
+        $raves->transform(function (Rave $rave) {
             return $this->loadAdditionalRaveProperties($rave);
         });
 
@@ -40,14 +44,14 @@ class RaveController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreRaveRequest $request)
+    public function store(StoreRaveRequest $request): RedirectResponse
     {
         $request->user()->raves()->create($request->validated());
 
         return redirect()->route('raves.index');
     }
 
-    public function storeComment(StoreRaveRequest $request, Rave $rave)
+    public function storeComment(StoreRaveRequest $request, Rave $rave): RedirectResponse
     {
         $comment = new Rave($request->validated());
         $comment->user()->associate($request->user());
@@ -56,7 +60,7 @@ class RaveController extends Controller
         return back()->withMessage('Comment posted.');
     }
 
-    public function storeRerave(StoreRaveRequest $request, Rave $rave)
+    public function storeRerave(StoreRaveRequest $request, Rave $rave): RedirectResponse
     {
         $comment = new Rave($request->validated());
         $comment->user()->associate($request->user());
@@ -68,7 +72,7 @@ class RaveController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, Rave $rave)
+    public function show(Request $request, Rave $rave): InertiaResponse|InertiaResponseFactory
     {
         $rave
             ->load([
@@ -86,11 +90,11 @@ class RaveController extends Controller
         $rave->comments->loadCount($this->getCountsToLoad());
         $rave->reraves->loadCount($this->getCountsToLoad());
 
-        $rave->comments->transform(function ($comment) {
+        $rave->comments->transform(function (Rave $comment) {
             return $this->loadAdditionalRaveProperties($comment);
         });
 
-        $rave->reraves->transform(function ($rerave) {
+        $rave->reraves->transform(function (Rave $rerave) {
             return $this->loadAdditionalRaveProperties($rerave);
         });
 
@@ -117,9 +121,9 @@ class RaveController extends Controller
 
     private function loadAdditionalRaveProperties(Rave $rave): Rave
     {
-        $rave['is_owner'] = $rave->user_id === auth()->id();
+        $rave['is_owner'] = $rave->user_id === Auth::id();
         $rave['is_liked'] = $rave->usersLiked()
-            ->where('user_id', auth()->id())
+            ->where('user_id', Auth::id())
             ->exists();
 
         return $rave;
@@ -128,7 +132,7 @@ class RaveController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateRaveRequest $request, Rave $rave)
+    public function update(UpdateRaveRequest $request, Rave $rave): RedirectResponse
     {
         $rave->update($request->validated());
 
@@ -138,7 +142,7 @@ class RaveController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Rave $rave)
+    public function destroy(Rave $rave): RedirectResponse
     {
         $rave->delete();
 
@@ -148,16 +152,12 @@ class RaveController extends Controller
     /**
      * Toggle the like status of the Rave for the user
      */
-    public function toggleLike(Request $request, Rave $rave)
+    public function toggleLike(Request $request, Rave $rave): void
     {
         $request->user()->likedRaves()->toggle($rave);
-
-        // return json_encode([
-        //     'likes_count' => $rave->likes_count,
-        // ]);
     }
 
-    public function rerave(StoreRaveRequest $request, Rave $rave)
+    public function rerave(StoreRaveRequest $request, Rave $rave): RedirectResponse
     {
         $rerave = new Rave($request->validated());
         $rerave->user()->associate($request->user());
