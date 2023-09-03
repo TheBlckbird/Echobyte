@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('guest')->group(function () {
 Route::get('/', function () {
     if (auth()->check()) {
         return redirect()->route('raves.index');
@@ -22,7 +21,6 @@ Route::get('/', function () {
 
     return inertia('Index');
 })->name('home');
-// });
 
 Route::middleware('auth')->group(function () {
     // Route::get('/', function () {

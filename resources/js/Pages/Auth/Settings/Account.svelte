@@ -1,5 +1,5 @@
 <script>
-    import { useForm, page } from '@inertiajs/svelte'
+    import { inertia, page, useForm } from '@inertiajs/svelte'
 
     let changeNameForm = useForm({
         name: $page.props.auth.user.name
@@ -119,3 +119,5 @@
 
     <button type="submit" disabled={$deleteUserForm.processing}>Delete</button>
 </form>
+
+<button use:inertia={{ href: '/logout', method: 'post' }}>Logout</button>

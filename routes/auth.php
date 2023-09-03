@@ -1,7 +1,6 @@
 <?php
 
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\SettingsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -11,13 +10,13 @@ Route::middleware('guest')->group(function () {
         return inertia('Auth/Login');
     })->name('login');
 
-    Route::post('/login', [LoginController::class, 'authenticate'])->name('login.attempt');
+    Route::post('/login', [AuthController::class, 'authenticate'])->name('login.attempt');
 
     Route::get('/register', function () {
         return inertia('Auth/Register');
     })->name('register');
 
-    Route::post('/register', [RegisterController::class, 'register'])->name('register.attempt');
+    Route::post('/register', [AuthController::class, 'register'])->name('register.attempt');
 });
 
 Route::middleware('auth')->group(function () {
@@ -38,4 +37,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/settings/account/name', [SettingsController::class, 'name'])->name('settings.account.name');
     Route::post('/settings/account/password', [SettingsController::class, 'password'])->name('settings.account.password');
     Route::delete('/settings/account/delete', [SettingsController::class, 'delete'])->name('settings.account.delete');
+
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
