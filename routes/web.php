@@ -35,7 +35,8 @@ Route::middleware('auth')->group(function () {
             'edit',
         ])
         ->parameter('raves', 'rave');
-    Route::post('/raves/{rave}/comments', [RaveController::class, 'storeComment'])->name('raves.comments');
+    Route::post('/raves/{rave}/comments', [RaveController::class, 'storeComment'])->name('raves.comments.store');
+    Route::post('/raves/{rave}/reraves', [RaveController::class, 'storeRerave'])->name('raves.reraves.store');
 
     Route::post('/raves/{rave}/toggle-like', [RaveController::class, 'toggleLike'])->name('raves.toggle-like');
 });

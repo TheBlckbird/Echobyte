@@ -14,6 +14,8 @@ export interface Rave {
     reraves_count: number
     is_liked: boolean
     is_owner: boolean
-    comments?: Rave[]
+    comments: Rave[]
+    reraves: Rave[]
     user: User
+    original_rave: Rave | null
 }

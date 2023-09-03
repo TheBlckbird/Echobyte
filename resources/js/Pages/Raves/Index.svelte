@@ -1,9 +1,15 @@
 <script lang="ts">
     import { Link } from '@inertiajs/svelte'
     import Rave from './Partials/Rave.svelte'
+    import { Rave as RaveType } from '@/types'
     import NewRave from './Partials/NewRave.svelte'
 
-    export let raves
+    export let raves: {
+        data: RaveType[]
+        prev_page_url: string
+        next_page_url: string
+    }
+    console.table(raves.data[0])
 </script>
 
 <NewRave />

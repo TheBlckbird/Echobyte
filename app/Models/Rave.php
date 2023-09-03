@@ -39,6 +39,7 @@ class Rave extends Model
     public function originalRave(): BelongsTo
     {
         return $this->belongsTo(Rave::class, 'original_rave_id');
+        echo 'hiA';
     }
 
     /**

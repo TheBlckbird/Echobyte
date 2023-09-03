@@ -1,7 +1,15 @@
+<script context="module" lang="ts">
+    export enum Type {
+        Rave = 'rave',
+        Comment = 'comment',
+        Rerave = 'rerave'
+    }
+</script>
+
 <script lang="ts">
     import { useForm } from '@inertiajs/svelte'
 
-    export let comment = false
+    export let type: Type = Type.Rave
     export let raveId = -1
 
     let newRaveForm = useForm({
@@ -9,7 +17,24 @@
     })
 
     function submitNewRaveForm() {
-        let uri = comment ? `/raves/${raveId}/comments` : '/raves'
+        let uri = ''
+
+        switch (type) {
+            case Type.Rave:
+                uri = '/raves'
+                break
+
+            case Type.Comment:
+                uri = `/raves/${raveId}/comments`
+                break
+
+            case Type.Rerave:
+                uri = `/raves/${raveId}/reraves`
+                break
+
+            default:
+                break
+        }
 
         $newRaveForm.post(uri, {
             preserveScroll: true,

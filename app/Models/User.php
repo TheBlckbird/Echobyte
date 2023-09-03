@@ -64,9 +64,4 @@ class User extends Authenticatable
     {
         $this->likedRaves()->toggle($rave);
     }
-
-    public function hasLiked(Rave $rave): bool
-    {
-        return $this->likedRaves()->where('rave_id', $rave->id)->exists();
-    }
 }

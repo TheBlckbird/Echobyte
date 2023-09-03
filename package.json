@@ -18,6 +18,7 @@
     },
     "dependencies": {
         "@inertiajs/svelte": "^1.0.9",
+        "copy-to-clipboard": "^3.3.3",
         "normalize.css": "^8.0.1"
     }
 }
