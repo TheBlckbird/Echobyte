@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class SettingsController extends Controller
@@ -44,7 +45,7 @@ class SettingsController extends Controller
 
         $user = $request->user();
 
-        auth()->logout();
+        Auth::logout();
 
         session()->invalidate();
 
