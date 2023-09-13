@@ -1,14 +1,14 @@
 # Rave
 
-This is a complete rewrite of my [very small Twitter clone](https://github.com/theblckbird/twitter-clone).
+This is a complete rewrite of my [very small Twitter (sorry, X) clone](https://github.com/theblckbird/twitter-clone).
 
 ## Tasks
 
 -   [x] Authentication
--   [ ] Raves
--   [ ] Comments
+-   [x] Raves
+-   [x] Comments
 -   [x] Likes
--   [ ] Reraves
+-   [x] Reraves
 -   [ ] show ... count
     -   [x] rerave
     -   [x] comment
