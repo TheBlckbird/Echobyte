@@ -1,4 +1,4 @@
-# Rave
+# Echobyte
 
 This is a complete rewrite of my [very small Twitter (sorry, X) clone](https://github.com/theblckbird/twitter-clone).
 
